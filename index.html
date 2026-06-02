@@ -374,6 +374,11 @@ sub { bottom: -0.25em; color: inherit; }
 .cache-clear-btn { font-size: 11px; font-weight: 700; color: var(--danger); background: var(--danger-soft); border: 1px solid #fca5a5; border-radius: 6px; padding: 4px 10px; cursor: pointer; font-family: var(--font); transition: .15s; white-space: nowrap; }
 .cache-clear-btn:hover { background: var(--danger); color: #fff; }
 
+.password-wrapper { position: relative; display: flex; align-items: center; }
+.password-wrapper input { padding-right: 45px; }
+.password-toggle-btn { position: absolute; right: 12px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; padding: 6px; display: flex; align-items: center; justify-content: center; transition: color .2s; }
+.password-toggle-btn:hover { color: var(--text); }
+
 @media (max-width:600px) {
   .exam-header { padding: 14px 16px; }
   .q-card { padding: 20px 16px; }
@@ -527,7 +532,10 @@ sub { bottom: -0.25em; color: inherit; }
       </div>
       <div class="field">
         <label>Password Mulai</label>
-        <input type="password" id="pass-mulai" placeholder="Masukkan password dari pengawas">
+        <div class="password-wrapper">
+          <input type="password" id="pass-mulai" placeholder="Masukkan password dari pengawas">
+          <button type="button" class="password-toggle-btn" id="toggle-pass-mulai" title="Tampilkan password">👁️</button>
+        </div>
       </div>
       <button class="btn-primary" id="btn-mulai">Masuk ke Ruang Ujian</button>
     </div>
@@ -578,7 +586,10 @@ sub { bottom: -0.25em; color: inherit; }
       </div>
       <hr>
       <p>Pastikan semua jawaban sudah benar sebelum mengirim. Jawaban tidak dapat diubah setelah dikirim.</p>
-      <input type="password" id="pass-selesai" placeholder="Password selesai dari pengawas">
+      <div class="password-wrapper">
+        <input type="password" id="pass-selesai" placeholder="Password selesai dari pengawas">
+        <button type="button" class="password-toggle-btn" id="toggle-pass-selesai" title="Tampilkan password">👁️</button>
+      </div>
       <button class="btn-submit" id="btn-kirim">🔥 Kirim Semua Jawaban ke Firebase</button>
     </div>
   </div>
@@ -768,6 +779,34 @@ window.addEventListener('DOMContentLoaded', () => {
   kodeMapelEl.addEventListener('blur', cekKodeMapel);
   document.getElementById('no-peserta').addEventListener('input', onNoPesertaInput);
   document.getElementById('pass-mulai').addEventListener('keydown', e => { if (e.key === 'Enter') mulaiUjian(); });
+  
+  // Password toggle buttons
+  document.getElementById('toggle-pass-mulai').addEventListener('click', (e) => {
+    e.preventDefault();
+    const input = document.getElementById('pass-mulai');
+    const btn = document.getElementById('toggle-pass-mulai');
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.textContent = '🙈';
+    } else {
+      input.type = 'password';
+      btn.textContent = '👁️';
+    }
+  });
+  
+  document.getElementById('toggle-pass-selesai').addEventListener('click', (e) => {
+    e.preventDefault();
+    const input = document.getElementById('pass-selesai');
+    const btn = document.getElementById('toggle-pass-selesai');
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.textContent = '🙈';
+    } else {
+      input.type = 'password';
+      btn.textContent = '👁️';
+    }
+  });
+  
   window.addEventListener('beforeunload', () => { if (soalList.length > 0 && siswaAktif) saveSession(); });
   animateSplashTo(30, 400, 'Menghubungi server...', async () => {
     await muatCoverAwal();
